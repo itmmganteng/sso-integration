@@ -1,0 +1,17 @@
+{
+    "name": "itmm/sso",
+    "description": "Package untuk integrasi dengan SSO mmart",
+    "type": "library",
+    "license": "itmm",
+    "autoload": {
+        "psr-4": {
+            "Itmm\\Sso\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "itmm"
+        }
+    ],
+    "require": {}
+}
