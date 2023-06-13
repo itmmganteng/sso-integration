@@ -16,6 +16,7 @@ class SsoServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/App/Http/Middleware' => base_path('app/Http/Middleware'),
             __DIR__ . '/App/Http/Controllers' => base_path('app/Http/Controllers'),
+            __DIR__ . '/config' => base_path('config'),
         ], 'sso-components');
 
         $this->publishes([

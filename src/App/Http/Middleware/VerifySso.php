@@ -78,7 +78,8 @@ class VerifySso
 			return $next($request);
 		} catch (\Throwable $th) {
 			$request->session()->flush();
-			return redirect(config('sso.url'));
+			
+			return redirect($request->getScheme() . '://' . config('sso.url'));
 		}
     }
 }
