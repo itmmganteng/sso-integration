@@ -21,7 +21,7 @@ class SsoServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/resources' => base_path('resources'),
-        ], 'sso-resources-jeroennoten');
+        ], 'sso-resources');
 
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
     }
