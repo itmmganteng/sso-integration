@@ -7,7 +7,7 @@ Route::middleware('web')->group(function(){
     Route::post('sso-logout', [SsoController::class, 'logout'])->name('sso.logout');
 });
 
-Route::middleware(['authenticated.sso'])->group(function () {
+Route::middleware(['web', 'authenticated.sso'])->group(function () {
     Route::get('sso/auth', function () {
         return view('pages.sso.auth');
     })->name('sso.auth');
