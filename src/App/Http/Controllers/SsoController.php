@@ -29,7 +29,7 @@ class SsoController extends Controller
 
         try {
             // Make the POST request using Laravel's HTTP facade
-            $response = Http::post(config('sso.request_url') . '/oauth/token', [
+            $response = Http::post(request()->getScheme() . '://' . config('sso.request_url') . '/oauth/token', [
                 'grant_type'        => 'authorization_code',
                 'client_id'         => config('sso.client_id'),
                 'client_secret'     => config('sso.client_secret'),
