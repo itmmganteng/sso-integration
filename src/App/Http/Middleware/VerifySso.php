@@ -26,7 +26,7 @@ class VerifySso
             if (!$request->session()->has('user-session')) {
                 return redirect()->route('sso.auth');
             }
-            
+
             $responseSession = collect($request->session()->get('user-session'));
 
             $issuedAt = Carbon::parse($responseSession['custom_data']['issued_at']);
@@ -36,9 +36,9 @@ class VerifySso
             $userSession = $responseSession['custom_data']['user'];
 
             $genericUser = new GenericUser($userSession);
-            
+
             $user = new User();
-            
+
             $user->user_id = $genericUser->user_id;
             $user->name = $genericUser->name;
             $user->email = $genericUser->email;
@@ -55,8 +55,10 @@ class VerifySso
                 })->all();
                 return (object) $area;
             })->all();
-            
-            $user->stores = $genericUser->stores;
+
+            $user->stores = collect($genericUser->stores)->map(function ($store) {
+                return (object) $store;
+            })->all();
             $user->permissions = $genericUser->permissions;
             $user->credentials = [
                 'token_type' => $responseSession['token_type'],
@@ -64,7 +66,7 @@ class VerifySso
                 'refresh_token' => $responseSession['refresh_token'],
                 'expired_at' => $expiredAt
             ];
-            
+
             auth()->setUser($user);
 
             foreach ($request->session()->get('user-session')['custom_data']['user']['permissions'] as $permission) {
@@ -74,14 +76,13 @@ class VerifySso
             }
 
             $user = auth()->user();
-            $accessToken = $user->credentials['access_token']; 
-            
-            if($user->credentials['expired_at']->isPast())
-            {
+            $accessToken = $user->credentials['access_token'];
+
+            if ($user->credentials['expired_at']->isPast()) {
                 $response = Http::asForm()->post(config('sso.request_url') . '/api/oauth/introspect', [
                     'token' => $accessToken,
                 ]);
-                
+
                 $data = $response->json();
                 if (!$data['active']) {
                     $this->refreshingToken($user);
@@ -89,9 +90,10 @@ class VerifySso
             }
             return $next($request);
         } catch (\Throwable $th) {
+            dd($th);
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            if(env('APP_ENV') == 'local') {
+            if (env('APP_ENV') == 'local') {
                 return redirect($request->getScheme() . '://' . config('sso.url'));
             } else {
                 return redirect(env('SSO_REDIRECT'));
@@ -117,7 +119,7 @@ class VerifySso
 
         // Perbarui Access Token di User Session
         $newTokenData = $refreshResponse->json();
-        
+
         session(['user-session' => $newTokenData]);
 
         // Perbarui data user
@@ -125,7 +127,7 @@ class VerifySso
         $updatedCredentials['access_token'] = $newTokenData['access_token'];
         $updatedCredentials['refresh_token'] = $newTokenData['refresh_token'];
         $updatedCredentials['expires_in'] = $newTokenData['expires_in'];
-        
+
         // Tetapkan kembali credentials
         $user->credentials = $updatedCredentials;
 
