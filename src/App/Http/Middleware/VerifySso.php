@@ -24,7 +24,7 @@ class VerifySso
     {
         try {
             if (!$request->session()->has('user-session')) {
-                return redirect()->route('login.sso');
+                return redirect()->route('sso.auth');
             }
             
             $responseSession = collect($request->session()->get('user-session'));
@@ -112,7 +112,7 @@ class VerifySso
 
         if ($refreshResponse->status() === 401) {
             Session::flush();
-            return redirect()->route('login.sso');
+            return redirect()->route('sso.auth');
         }
 
         // Perbarui Access Token di User Session
