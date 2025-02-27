@@ -26,14 +26,14 @@
 
             <!-- Right Background -->
             <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
-                style="background-image: url({{ asset('assets/media/stock/900x600/84.jpg') }}); background-size: cover; background-repeat: no-repeat;">
+                style="background-image: url({{ asset('assets/media/stock/900x600/46.jpg') }}); background-size: cover; background-repeat: no-repeat;">
                 <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100 text-center">
                     <a href="#" class="mb-10">
                         <img alt="Logo" src="{{ asset('assets/media/logos/m-mart.svg') }}" class="h-60px h-lg-75px" />
                     </a>
                     <img class="mx-auto w-275px w-md-10 w-xl-250px w-xxl-500px mb-10 mb-lg-20"
-                        src="{{ asset('assets/media/illustrations/sigma-1/12.png') }}" alt="" />
-                    <h1 class="text-white fs-2qx fw-bolder text-center mb-7">Store Use Online</h1>
+                        src="{{ asset('assets/media/illustrations/dozzy-1/1.png') }}" alt="" />
+                    <h1 class="text-white fs-2qx fw-bolder text-center mb-7">{{ env('APP_NAME')}}</h1>
                     <p class="text-white fs-base">
                         Selamat datang di M Mart! Masuk dengan SSO untuk akses mudah ke semua fitur.
                         Nikmati kemudahan dalam satu platform.

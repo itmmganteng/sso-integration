@@ -24,27 +24,38 @@ class VerifySso
     {
         try {
             if (!$request->session()->has('user-session')) {
-                return redirect()->route('sso.auth');
+                return redirect()->route('login.sso');
             }
-
+            
             $responseSession = collect($request->session()->get('user-session'));
 
             $issuedAt = Carbon::parse($responseSession['custom_data']['issued_at']);
             $expiresIn = $responseSession['expires_in']; // in seconds
-
             $expiredAt = $issuedAt->addSeconds($expiresIn);
 
             $userSession = $responseSession['custom_data']['user'];
-            $genericUser = new GenericUser($userSession);
 
+            $genericUser = new GenericUser($userSession);
+            
             $user = new User();
+            
             $user->user_id = $genericUser->user_id;
             $user->name = $genericUser->name;
             $user->email = $genericUser->email;
             $user->session_id = $genericUser->session_id;
             $user->role = $genericUser->role;
             $user->all_store = $genericUser->all_store;
-            $user->working_area = $genericUser->working_area;
+
+            $user->working_area = collect($genericUser->working_area)->map(function ($area) {
+                $area['roles'] = collect($area['roles'])->map(function ($role) {
+                    return (object) $role;
+                })->all();
+                $area['departments'] = collect($area['departments'])->map(function ($department) {
+                    return (object) $department;
+                })->all();
+                return (object) $area;
+            })->all();
+            
             $user->stores = $genericUser->stores;
             $user->permissions = $genericUser->permissions;
             $user->credentials = [
@@ -53,7 +64,7 @@ class VerifySso
                 'refresh_token' => $responseSession['refresh_token'],
                 'expired_at' => $expiredAt
             ];
-
+            
             auth()->setUser($user);
 
             foreach ($request->session()->get('user-session')['custom_data']['user']['permissions'] as $permission) {
@@ -63,14 +74,14 @@ class VerifySso
             }
 
             $user = auth()->user();
-            $accessToken = $user->credentials['access_token'];
-
+            $accessToken = $user->credentials['access_token']; 
+            
             if($user->credentials['expired_at']->isPast())
             {
                 $response = Http::asForm()->post(config('sso.request_url') . '/api/oauth/introspect', [
                     'token' => $accessToken,
                 ]);
-
+                
                 $data = $response->json();
                 if (!$data['active']) {
                     $this->refreshingToken($user);
@@ -80,11 +91,10 @@ class VerifySso
         } catch (\Throwable $th) {
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-
             if(env('APP_ENV') == 'local') {
                 return redirect($request->getScheme() . '://' . config('sso.url'));
             } else {
-                return redirect(config('sso.request_url'));
+                return redirect(env('SSO_REDIRECT'));
             }
         }
     }
@@ -102,12 +112,12 @@ class VerifySso
 
         if ($refreshResponse->status() === 401) {
             Session::flush();
-            return redirect()->route('sso.auth');
+            return redirect()->route('login.sso');
         }
 
         // Perbarui Access Token di User Session
         $newTokenData = $refreshResponse->json();
-
+        
         session(['user-session' => $newTokenData]);
 
         // Perbarui data user
@@ -115,7 +125,7 @@ class VerifySso
         $updatedCredentials['access_token'] = $newTokenData['access_token'];
         $updatedCredentials['refresh_token'] = $newTokenData['refresh_token'];
         $updatedCredentials['expires_in'] = $newTokenData['expires_in'];
-
+        
         // Tetapkan kembali credentials
         $user->credentials = $updatedCredentials;
 
