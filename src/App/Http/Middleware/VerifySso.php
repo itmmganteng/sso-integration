@@ -90,7 +90,6 @@ class VerifySso
             }
             return $next($request);
         } catch (\Throwable $th) {
-            dd($th);
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             if (env('APP_ENV') == 'local') {
