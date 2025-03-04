@@ -13,7 +13,7 @@ class SsoController extends Controller
 		$request->session()->invalidate();
 		$request->session()->regenerate();
 
-        return redirect()->route('sso.auth')->with('status', 'You have been logged out!');
+        return redirect(request()->getScheme() . '://' . config('sso.url'));
 	}
 
     public function callback(Request $request)
