@@ -79,7 +79,7 @@ class VerifySso
             $accessToken = $user->credentials['access_token'];
 
             if ($user->credentials['expired_at']->isPast()) {
-                $response = Http::asForm()->post(config('sso.request_url') . '/api/oauth/introspect', [
+                $response = Http::retry(5, 500)->asForm()->post(config('sso.request_url') . '/api/oauth/introspect', [
                     'token' => $accessToken,
                 ]);
 
@@ -103,7 +103,7 @@ class VerifySso
     public function refreshingToken($user)
     {
         $refreshToken = $user->credentials['refresh_token'];
-        $refreshResponse = Http::asForm()->post(config('sso.request_url') . '/oauth/token', [
+        $refreshResponse = Http::retry(5, 500)->asForm()->post(config('sso.request_url') . '/oauth/token', [
             'grant_type' => 'refresh_token',
             'refresh_token' => $refreshToken,
             'client_id' => config('sso.client_id'),
