@@ -15,7 +15,7 @@
                         </div>
                         <div class="d-grid mb-10">
                             <!-- Redirect to SSO for OAuth -->
-                            <a href="{{ request()->getScheme() }}://{{ config('sso.url') }}/auth/v2/login?client_id={{ config('sso.client_id') }}&redirect_uri={{ config('sso.redirect_uri') }}&response_type=code&scope="
+                            <a href="{{ config('sso.url') }}/auth/v2/login?client_id={{ config('sso.client_id') }}&redirect_uri={{ config('sso.app_callback_url') }}&response_type=code&scope="
                                 class="btn btn-primary py-3 px-6 fw-bold shadow-sm">
                                 Login dengan SSO
                             </a>
@@ -26,18 +26,22 @@
 
             <!-- Right Background -->
             <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2"
-                style="background-image: url({{ asset('assets/media/stock/900x600/46.jpg') }}); background-size: cover; background-repeat: no-repeat;">
+                style="background-image: url({{ asset('assets/media/auth/bg3-flip.jpg') }}); background-size: cover; background-repeat: no-repeat;">
                 <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100 text-center">
                     <a href="#" class="mb-10">
                         <img alt="Logo" src="{{ asset('assets/media/logos/m-mart.svg') }}" class="h-60px h-lg-75px" />
                     </a>
                     <img class="mx-auto w-275px w-md-10 w-xl-250px w-xxl-500px mb-10 mb-lg-20"
-                        src="{{ asset('assets/media/illustrations/dozzy-1/1.png') }}" alt="" />
+                        src="{{ asset('assets/media/illustrations/sigma-1/13.png') }}" alt="" />
                     <h1 class="text-white fs-2qx fw-bolder text-center mb-7">{{ env('APP_NAME')}}</h1>
-                    <p class="text-white fs-base">
-                        Selamat datang di M Mart! Masuk dengan SSO untuk akses mudah ke semua fitur.
-                        Nikmati kemudahan dalam satu platform.
-                    </p>
+                    <div class="d-none d-lg-block text-white fs-base text-center">
+                            Selamat datang di Aplikasi {{ env('APP_NAME')}} ! Masuk dengan akun Anda untuk akses cepat <br /> dan mudah ke semua fitur aplikasi.
+                            <span class="opacity-75-hover text-primary fw-bold me-1">Satu login</span>, semua kebutuhan Anda terpenuhi.
+                            <br />
+                            Mulai sekarang!
+                            <span class="opacity-75-hover text-primary fw-bold me-1">Masuk sekarang</span>
+                            dan nikmati kemudahan dalam satu platform.
+                    </div>
                 </div>
             </div>
         </div>

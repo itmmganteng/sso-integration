@@ -1,12 +1,13 @@
 <?php
 
 return [
-    'url' 			=> env('SSO_URL'),
-    'port' 			=> env('SSO_PORT'),
-    'client_id' 	=> env('SSO_CLIENT_ID'),
-    'client_secret' => env('SSO_CLIENT_SECRET'),
-    'redirect_uri' 	=> env('SSO_REDIRECT_URI'),
-    'app_id' 		=> env('SSO_APP_ID'),
-    'request_url' 	=> env('SSO_REQUEST_URL'),
-    'route_home' 	=> env('ROUTE_HOME_NAME')
+    'url' 			    => env('SSO_URL'),
+    'api_url' 		    => env('SSO_API_URL'),
+    'client_id' 	    => env('SSO_CLIENT_ID'),
+    'client_secret'     => env('SSO_CLIENT_SECRET'),
+
+    'app_id' 		    => env('APP_ID'),
+    'app_callback_url' 	=> env('APP_CALLBACK_URL'),
+    'app_login_url' 	=> env('APP_LOGIN_URL'),
+    'app_route_home' 	=> env('APP_ROUTE_HOME_NAME')
 ];

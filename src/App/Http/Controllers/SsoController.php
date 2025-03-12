@@ -13,14 +13,14 @@ class SsoController extends Controller
 		$request->session()->invalidate();
 		$request->session()->regenerate();
 
-        return redirect(request()->getScheme() . '://' . config('sso.url'));
+        return redirect(config('sso.url'));
 	}
 
     public function callback(Request $request)
     {
         Session::flush();
 
-        // Retrieve the authorization code from the query string
+        # Retrieve the authorization code from the query string
         $code = $request->query('code');
 
         if (!$code) {
@@ -28,24 +28,24 @@ class SsoController extends Controller
         }
 
         try {
-            // Make the POST request using Laravel's HTTP facade
-            $response = Http::retry(5, 500)->post(request()->getScheme() . '://' . config('sso.request_url') . '/oauth/token', [
+            # Make the POST request using Laravel's HTTP facade
+            $response = Http::retry(5, 500)->post(config('sso.api_url') . '/oauth/token', [
                 'grant_type'        => 'authorization_code',
                 'client_id'         => config('sso.client_id'),
                 'client_secret'     => config('sso.client_secret'),
-                'redirect_uri'      => config('sso.redirect_uri'),
+                'redirect_uri'      => config('sso.app_callback_url'),
                 'code'              => $code,
             ]);
 
-            // Check if the request was successful
+            # Check if the request was successful
             if (!$response->successful()) {
                 return response()->json(['error' => $response->body()], $response->status());
             }
 
-            // Decode the JSON response body
+            # Decode the JSON response body
             $responseData = $response->json();
 
-            // Extract custom data
+            # Extract custom data
             $responseCustomData = $responseData['custom_data'] ?? null;
 
             if (!$responseCustomData || !isset($responseCustomData['user'])) {
@@ -54,7 +54,7 @@ class SsoController extends Controller
 
             session(['user-session' => $responseData]);
 
-            return redirect()->route(config('sso.route_home'));
+            return redirect()->route(config('sso.app_route_home'));
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

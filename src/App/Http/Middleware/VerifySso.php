@@ -79,7 +79,7 @@ class VerifySso
             $accessToken = $user->credentials['access_token'];
 
             if ($user->credentials['expired_at']->isPast()) {
-                $response = Http::retry(5, 500)->asForm()->post(config('sso.request_url') . '/api/oauth/introspect', [
+                $response = Http::retry(5, 500)->asForm()->post(config('sso.api_url') . '/api/oauth/introspect', [
                     'token' => $accessToken,
                 ]);
 
@@ -92,18 +92,15 @@ class VerifySso
         } catch (\Throwable $th) {
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            if (env('APP_ENV') == 'local') {
-                return redirect($request->getScheme() . '://' . config('sso.url'));
-            } else {
-                return redirect(env('SSO_REDIRECT'));
-            }
+
+            return redirect(config('sso.url'));
         }
     }
 
     public function refreshingToken($user)
     {
         $refreshToken = $user->credentials['refresh_token'];
-        $refreshResponse = Http::retry(5, 500)->asForm()->post(config('sso.request_url') . '/oauth/token', [
+        $refreshResponse = Http::retry(5, 500)->asForm()->post(config('sso.api_url') . '/oauth/token', [
             'grant_type' => 'refresh_token',
             'refresh_token' => $refreshToken,
             'client_id' => config('sso.client_id'),

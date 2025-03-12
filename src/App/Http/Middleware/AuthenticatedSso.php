@@ -17,7 +17,7 @@ class AuthenticatedSso
     public function handle(Request $request, Closure $next)
     {
         if ($request->session()->has('user-session')) {
-            return redirect()->route(config('sso.route_home'));
+            return redirect()->route(config('sso.app_route_home'));
         }
 
         return $next($request);

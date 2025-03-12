@@ -40,36 +40,43 @@ protected $routeMiddleware = [
     'authenticated.sso' => \App\Http\Middleware\AuthenticatedSso::class,
 ];
 ```
-7. `SSO APP` Jalankan perintah berikut pada command line untuk membuat client
+7. `SSO APP` (Optional) Jalankan perintah berikut pada command line jika belum membuat keys passport pada SSO APP
+```
+php artisan passport:keys
+```
+8. `SSO APP` Jalankan perintah berikut pada command line untuk membuat client
 ```
 php artisan passport:client
 ```
-8. `SSO APP` Ikuti intruksi berikut saat menjalakan command line step ke 7
+9. `SSO APP` Ikuti intruksi berikut saat menjalakan command line step ke 7
 ```
 User Id: # Bisa di skip dengan tekan "Enter" langsung
-Name: [nama-aplikasi]
+Name: [nama-aplikasi] # Contoh: M Mart Application
+Redirect Request: [http:// or https://][url-aplikasi]/callback # Contoh: https://application.m-mart.co.id/callback
 ```
-9. `SSO APP` Setelah mengikuti intruksi tersebut akan muncul `client id` dan `client secret` seperti dibawah. Simpan `client id` dan `client secret` untuk digunakan pada `.env` file pada step ke 12
+10. `SSO APP` Setelah mengikuti intruksi tersebut akan muncul `client id` dan `client secret` seperti dibawah. Simpan `client id` dan `client secret` untuk digunakan pada `.env` file pada step ke 12
 ```
 New client created successfully.
 Client ID: 1
 Client secret: ********************
 ```
-10. `SSO APP` Perbarui data client yang baru saja di buat pada database. Perbarui pada kolom `app_id` menjadi id dari aplikasi anda pada SSO
-11. `SSO APP` Pastikan tipe login dari aplikasi sudah diperbarui ke menggunakan passport
-12. Pada file `.env` tambahkan beberapa environtment berikut
+11. `SSO APP` Perbarui data client yang baru saja di buat pada database. Perbarui pada kolom `app_id` menjadi id dari aplikasi anda pada SSO
+12. `SSO APP` Pastikan tipe login dari aplikasi sudah diperbarui ke menggunakan passport
+13. Pada file `.env` tambahkan beberapa environment berikut yang berisikan credential SSO
 ```
-SSO_URL=[sso-url]
-SSO_REQUEST_URL=[sso-url]
-SSO_PORT=[sso-port]
+SSO_URL=[sso-url] # Contoh: https://sso.m-mart.co.id
+SSO_API_URL=[sso-api-url] # Contoh: https://sso.m-mart.co.id
 SSO_CLIENT_ID=[passport-client-id]
 SSO_CLIENT_SECRET=[passport-client-secret]
-SSO_REDIRECT_URI=[app-callback-url] # Contoh: http://app-url.com/callback
-SSO_APP_ID=[app-id-dari-sso]
-SSO_LOGIN_URL=[app-auth-url] # Contoh: http://app-url.com/sso/auth
-ROUTE_HOME_NAME=[home-route-name] # Contoh: home
 ```
-13. Jalankan script berikut untuk menyegarkan cache pada aplikasi
+14. Pada file `.env` tambahkan beberapa environment berikut yang berisikan credential Aplikasi
+```
+APP_ID=[app-id-dari-sso]
+APP_CALLBACK_URL=[app-callback-url] # Contoh: https://application.m-mart.co.id/callback
+APP_LOGIN_URL=[app-auth-url] # Contoh: https://application.m-mart.co.id/sso/auth
+APP_ROUTE_HOME_NAME=[home-route-name] # Contoh: home
+```
+15. Jalankan script berikut untuk menyegarkan cache pada aplikasi
 ```
 php artisan optimize:clear
 ```
