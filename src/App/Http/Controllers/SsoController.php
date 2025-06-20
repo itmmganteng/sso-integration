@@ -16,6 +16,14 @@ class SsoController extends Controller
         return redirect(config('sso.url'));
 	}
 
+    public function logoutForce(Request $request)
+	{
+		$request->session()->invalidate();
+		$request->session()->regenerate();
+
+        return redirect(config('sso.url') . '/app-logout?redirect=' . url('/'));
+	}
+
     public function callback(Request $request)
     {
         Session::flush();
