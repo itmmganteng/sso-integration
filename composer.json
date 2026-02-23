@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^7.2|^8.0",
-        "firebase/php-jwt": "^6.4"
+        "php": "^8.2",
+        "firebase/php-jwt": "^7.0"
     }
 }
